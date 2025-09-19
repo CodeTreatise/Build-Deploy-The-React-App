@@ -1,0 +1,18 @@
+{
+  "name": "modern-react-guide",
+  "version": "1.0.0",
+  "description": "Welcome to the most comprehensive React application development guide for 2025. This guide takes you from project initialization to production deployment, following industry best practices and enterprise patterns.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vitepress dev .",
+    "docs:build": "vitepress build .",
+    "docs:preview": "vitepress preview ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
