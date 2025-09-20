@@ -23,6 +23,45 @@ In this chapter, we'll implement a comprehensive testing strategy using Vitest a
 
 ## Why Vitest + React Testing Library in 2025?
 
+**🤔 WHY Modern Testing Matters**
+
+Testing in modern React applications is not just about preventing bugs—it's about enabling confidence in rapid development, refactoring, and deployment. Modern testing strategies shift from implementation-focused testing to user-behavior testing, ensuring that applications work as users expect rather than as developers implement. This philosophical shift improves test reliability, reduces maintenance overhead, and provides better coverage of real-world usage scenarios.
+
+**🎯 WHAT Constitutes Modern Testing Strategy**
+
+Comprehensive modern testing encompasses:
+- **User-Centric Testing**: Focus on user interactions and outcomes rather than internal implementation
+- **Fast Feedback Loops**: Instant test execution with hot reload capabilities
+- **Accessibility Integration**: Built-in accessibility testing as part of the development workflow
+- **Integration Testing**: Testing component interactions and API integrations
+- **Performance Testing**: Ensuring components perform well under realistic conditions
+- **Visual Regression Testing**: Detecting unintended UI changes
+- **End-to-End Testing**: Complete user workflow validation
+
+**⏰ WHEN to Apply Different Testing Strategies**
+
+Testing strategies evolve with application complexity:
+
+- **Component Development**: Unit tests for isolated component behavior
+- **Feature Development**: Integration tests for component interactions
+- **API Integration**: Mock and real API testing strategies
+- **User Workflows**: End-to-end testing for critical paths
+- **Performance Optimization**: Load and stress testing for bottlenecks
+- **Accessibility Compliance**: Automated accessibility auditing
+- **Deployment**: Smoke tests and health checks
+
+**🚀 HOW Modern Testing Transforms Development**
+
+The modern testing approach follows these principles:
+
+1. **Test User Behavior**: Write tests that mimic how users interact with your application
+2. **Fast Feedback**: Optimize for speed to enable Test-Driven Development (TDD)
+3. **Confidence in Changes**: Comprehensive coverage that enables fearless refactoring
+4. **Accessibility by Default**: Integrate accessibility testing into development workflow
+5. **Realistic Testing**: Use real APIs and data when possible, with strategic mocking
+
+### Technology Comparison & Decision Framework
+
 ### Vitest vs Other Test Runners
 
 | Feature | Vitest | Jest | Cypress | Playwright |
@@ -75,6 +114,40 @@ In this chapter, we'll implement a comprehensive testing strategy using Vitest a
 ---
 
 ## Installation & Configuration
+
+**🤔 WHY Strategic Testing Setup Matters**
+
+A well-configured testing environment is the foundation of a sustainable testing strategy. Poor configuration leads to flaky tests, slow feedback loops, and developer frustration. Modern testing setup requires careful consideration of browser environments, module resolution, TypeScript integration, and performance optimization. The goal is zero-friction testing where developers naturally write tests because the experience is seamless and productive.
+
+**🎯 WHAT Comprehensive Testing Setup Includes**
+
+Modern testing configuration encompasses:
+- **Environment Simulation**: Accurate browser environment simulation with jsdom
+- **Module Resolution**: Seamless handling of ES modules and TypeScript
+- **Performance Optimization**: Fast test execution with intelligent caching
+- **Developer Experience**: Hot reload, watch mode, and intuitive debugging
+- **Coverage Integration**: Comprehensive coverage reporting with visual feedback
+- **CI/CD Integration**: Reliable test execution in continuous integration environments
+
+**⏰ WHEN to Prioritize Different Configuration Aspects**
+
+Configuration priorities shift based on project stage:
+
+- **Project Initialization**: Focus on basic setup and developer experience
+- **Team Growth**: Emphasize consistency and shared configuration
+- **Scale Challenges**: Optimize for performance and parallelization
+- **Quality Gates**: Integrate coverage thresholds and quality metrics
+- **Production Readiness**: Add comprehensive E2E and integration testing
+
+**🚀 HOW to Build Robust Testing Foundation**
+
+Implementation follows progressive enhancement:
+
+1. **Core Setup**: Basic Vitest configuration with essential plugins
+2. **Environment Configuration**: Browser simulation and module handling
+3. **Developer Tools**: Watch mode, UI, and debugging capabilities
+4. **Quality Gates**: Coverage thresholds and reporting
+5. **Advanced Features**: Snapshot testing, visual regression, performance testing
 
 ### Step 1: Install Dependencies
 
@@ -687,6 +760,42 @@ Create `tsconfig.test.json`:
 
 ## Component Testing Patterns
 
+**🤔 WHY Component Testing Is Fundamental**
+
+Component testing forms the foundation of a reliable testing strategy because components are the building blocks of React applications. Effective component testing ensures that individual pieces work correctly in isolation while providing fast feedback during development. Unlike end-to-end tests, component tests run quickly and pinpoint exactly where failures occur, making them essential for Test-Driven Development (TDD) and continuous integration workflows.
+
+**🎯 WHAT Effective Component Testing Covers**
+
+Comprehensive component testing addresses:
+- **User Interactions**: Click events, form submissions, keyboard navigation
+- **State Changes**: Internal state updates and prop-driven behavior changes
+- **Accessibility**: Screen reader compatibility, keyboard navigation, ARIA attributes
+- **Error Handling**: Graceful handling of invalid props and error states
+- **Edge Cases**: Empty states, loading states, and boundary conditions
+- **Integration Points**: Component interactions and data flow
+- **Visual Behavior**: Conditional rendering and style applications
+
+**⏰ WHEN to Write Different Types of Component Tests**
+
+Testing strategies vary by component complexity:
+
+- **Simple Components**: Focus on rendering and basic interactions
+- **Complex Components**: Test state management and side effects
+- **Form Components**: Validate user input and validation logic
+- **Connected Components**: Mock external dependencies and test integration
+- **Higher-Order Components**: Test enhancement behavior and prop passing
+- **Custom Hooks**: Isolate hook logic from component rendering
+
+**🚀 HOW to Structure Effective Component Tests**
+
+Implementation follows user-centric patterns:
+
+1. **Arrange**: Set up component with realistic props and context
+2. **Act**: Simulate user interactions (clicks, typing, navigation)
+3. **Assert**: Verify expected outcomes from user perspective
+4. **Accessibility**: Ensure components work with assistive technologies
+5. **Error Scenarios**: Test graceful handling of error conditions
+
 ### Step 1: Basic Component Tests
 
 Create `src/components/ui/__tests__/Button.test.tsx`:
@@ -1070,6 +1179,40 @@ describe('LoginForm', () => {
 
 ## Hook Testing
 
+**🤔 WHY Hook Testing Is Critical**
+
+Custom hooks encapsulate stateful logic and side effects, making them the nerve center of modern React applications. Testing hooks in isolation provides confidence in complex state management, API interactions, and business logic without the complexity of component rendering. Hook testing enables true unit testing of logic while ensuring that the hook's contract remains stable as implementation details change.
+
+**🎯 WHAT Hook Testing Should Validate**
+
+Comprehensive hook testing covers:
+- **State Management**: Initial state, state transitions, and state persistence
+- **Side Effects**: API calls, timers, event listeners, and cleanup
+- **Dependencies**: Proper handling of dependency arrays and re-execution logic
+- **Error Handling**: Graceful error recovery and error state management
+- **Performance**: Memoization, debouncing, and optimization patterns
+- **Lifecycle**: Mounting, updating, and unmounting behavior
+- **Edge Cases**: Boundary conditions and unexpected input handling
+
+**⏰ WHEN to Test Hooks vs Components**
+
+Testing strategy depends on the abstraction level:
+
+- **Hook Testing**: For isolated business logic, state management, API interactions
+- **Component Testing**: For UI behavior, user interactions, accessibility
+- **Integration Testing**: For hook + component interaction and data flow
+- **E2E Testing**: For complete user workflows and system integration
+
+**🚀 HOW to Structure Effective Hook Tests**
+
+Hook testing follows these patterns:
+
+1. **Isolation**: Test hooks independently of components
+2. **Realistic Usage**: Simulate how hooks are used in real components
+3. **Async Handling**: Properly test async operations and state updates
+4. **Cleanup Testing**: Verify proper cleanup of side effects
+5. **Performance Testing**: Validate optimization patterns and re-render behavior
+
 ### Step 1: Testing Custom Hooks
 
 Create `src/hooks/__tests__/useApiState.test.ts`:
@@ -1317,6 +1460,41 @@ describe('useAuth', () => {
 ---
 
 ## API & Integration Testing
+
+**🤔 WHY API Testing Is Essential**
+
+API testing bridges the gap between unit tests and end-to-end tests, providing confidence in the critical integration points where your application communicates with external services. In modern React applications, API integration failures are often the source of the most critical bugs—authentication failures, data inconsistencies, and performance issues. Comprehensive API testing ensures that your application handles both success and failure scenarios gracefully.
+
+**🎯 WHAT API Testing Should Cover**
+
+Comprehensive API testing addresses:
+- **Request Formation**: Proper headers, authentication, and payload structure
+- **Response Handling**: Success scenarios, error parsing, and data transformation
+- **Error Scenarios**: Network failures, timeout handling, and retry logic
+- **Authentication**: Token management, refresh flows, and security headers
+- **State Management**: Cache invalidation, optimistic updates, and rollback scenarios
+- **Performance**: Request timing, retry behavior, and rate limiting
+- **Integration**: Service-to-service communication and data flow
+
+**⏰ WHEN to Use Different API Testing Strategies**
+
+Testing approaches vary by integration complexity:
+
+- **Mock APIs**: For isolated unit testing and deterministic scenarios
+- **Test APIs**: For integration testing with controlled data
+- **Staging APIs**: For realistic testing with production-like data
+- **Contract Testing**: For ensuring API compatibility across teams
+- **Performance Testing**: For load testing and bottleneck identification
+
+**🚀 HOW to Structure Comprehensive API Tests**
+
+API testing follows layered validation:
+
+1. **Mock Layer**: Fast, isolated testing with predictable responses
+2. **Integration Layer**: Real API calls with test data
+3. **Error Simulation**: Network failures, timeouts, and edge cases
+4. **Authentication Testing**: Token flows and security scenarios
+5. **Performance Validation**: Response times and retry behavior
 
 ### Step 1: Testing API Services
 

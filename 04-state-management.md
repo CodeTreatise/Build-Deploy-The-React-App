@@ -23,6 +23,123 @@ In this chapter, we'll implement Redux Toolkit (RTK) for comprehensive state man
 
 ## Why Redux Toolkit in 2025?
 
+### 💡 Understanding State Management Fundamentals
+
+Before diving into Redux Toolkit, let's understand **why state management matters in React applications**:
+
+**The State Management Problem:**
+```javascript
+// ❌ Component state chaos (prop drilling)
+function App() {
+  const [user, setUser] = useState(null)
+  const [tasks, setTasks] = useState([])
+  const [notifications, setNotifications] = useState([])
+  
+  return (
+    <Layout user={user}>
+      <Dashboard 
+        user={user} 
+        tasks={tasks} 
+        notifications={notifications}
+        onTaskUpdate={(task) => {
+          setTasks(prev => prev.map(t => t.id === task.id ? task : t))
+          setNotifications(prev => [...prev, `Task ${task.title} updated`])
+        }}
+      />
+    </Layout>
+  )
+}
+
+// ✅ Centralized state management
+function App() {
+  return (
+    <Provider store={store}>
+      <Layout>
+        <Dashboard />
+      </Layout>
+    </Provider>
+  )
+}
+```
+
+**Key State Management Concepts:**
+1. **Local State**: Component-specific state (useState, useReducer)
+2. **Shared State**: State needed by multiple components
+3. **Server State**: Data from APIs (cached, synchronized)
+4. **UI State**: Loading, modals, form state
+5. **Global State**: Application-wide state (user, theme, settings)
+
+**State Management Evolution:**
+```javascript
+// React 2013-2015: Manual state lifting
+Parent → Child → Grandchild (prop drilling)
+
+// React 2016-2018: Redux + Connect
+Store → Connect HOC → Component
+
+// React 2019-2021: Context + useReducer
+Context → useContext → Component
+
+// React 2022+: Modern Redux Toolkit
+Store → useSelector → Component (with RTK Query)
+```
+
+**Why Centralized State Management?**
+- **Predictability**: Single source of truth for application state
+- **Debuggability**: Time-travel debugging, action history
+- **Testability**: Pure functions, predictable state updates
+- **Scalability**: Organized state structure for large applications
+- **Performance**: Optimized re-rendering, memoized selectors
+
+### 💡 Understanding Redux Mental Model
+
+**Redux Core Concepts (Think of it like a Bank):**
+```javascript
+// 🏦 Store = Bank (holds all the money/state)
+const store = configureStore({...})
+
+// 💳 Action = Transaction Request (what happened)
+const deposit = { type: 'account/deposit', payload: { amount: 100 } }
+
+// 👨‍💼 Reducer = Bank Teller (processes transactions)
+function accountReducer(state, action) {
+  switch (action.type) {
+    case 'account/deposit':
+      return { ...state, balance: state.balance + action.payload.amount }
+  }
+}
+
+// 📱 Selector = ATM (reads current balance)
+const selectBalance = (state) => state.account.balance
+
+// 🏪 Component = Customer (makes requests, gets updates)
+function AccountDisplay() {
+  const balance = useSelector(selectBalance)
+  const dispatch = useDispatch()
+  
+  return (
+    <div>
+      Balance: ${balance}
+      <button onClick={() => dispatch(deposit)}>Deposit $100</button>
+    </div>
+  )
+}
+```
+
+**Redux Data Flow (Unidirectional):**
+```
+Component → Action → Reducer → Store → Component
+    ↑                                      ↓
+    ←─────── useSelector ←─────────────────┘
+```
+
+**Benefits of Redux Toolkit:**
+- **Less Boilerplate**: createSlice combines actions and reducers
+- **Immer Integration**: Write "mutative" logic safely
+- **RTK Query**: Built-in data fetching with caching
+- **DevTools**: Excellent debugging experience
+- **TypeScript**: Excellent type safety out of the box
+
 ### Redux Toolkit vs Alternatives
 
 | Feature | Redux Toolkit | Zustand | Context API | Jotai |
@@ -47,6 +164,93 @@ In this chapter, we'll implement Redux Toolkit (RTK) for comprehensive state man
 7. **Simplified API**: 70% less boilerplate compared to classic Redux
 
 ### When to Use Redux Toolkit
+
+### 🎯 WHEN to Choose Different State Management Solutions
+
+**State Management Decision Tree:**
+
+```javascript
+// 📝 Local Component State - WHEN:
+const [count, setCount] = useState(0)
+// ✅ Use WHEN:
+- State only used in one component
+- Simple UI state (toggles, form inputs)
+- No need to persist or share
+- Component lifecycle matches state lifecycle
+
+// 🏠 Lifted State - WHEN:
+function Parent() {
+  const [sharedData, setSharedData] = useState()
+  return <Child1 data={sharedData} /><Child2 data={sharedData} />
+}
+// ✅ Use WHEN:
+- 2-3 components need same state
+- Components are closely related (parent-child)
+- State is temporary/session-based
+- Simple data structure
+
+// 🌐 Context API - WHEN:
+const ThemeContext = createContext()
+// ✅ Use WHEN:
+- App-wide settings (theme, language, auth status)
+- Rarely changing data
+- Avoiding prop drilling for stable data
+- Small to medium applications
+
+// 🏪 Redux Toolkit - WHEN:
+const store = configureStore({...})
+// ✅ Use WHEN:
+- Complex state shared across many components
+- Need time-travel debugging
+- Complex business logic
+- Server state caching needed
+- Team development (multiple developers)
+- Large applications (50+ components)
+```
+
+**State Type Decision Guide:**
+```javascript
+// 🎨 UI State Examples:
+- Modal open/closed → useState or Context
+- Loading states → RTK Query or useState  
+- Form validation → useState + libraries
+- Theme/dark mode → Context API
+
+// 📊 Application State Examples:
+- User authentication → Redux Toolkit
+- Shopping cart → Redux Toolkit  
+- Notifications → Redux Toolkit
+- App settings → Redux Toolkit or Context
+
+// 🌐 Server State Examples:  
+- API data → RTK Query (recommended)
+- User profiles → RTK Query
+- Real-time data → RTK Query + WebSocket
+- Cached responses → RTK Query
+```
+
+**Performance Considerations:**
+```javascript
+// 🐌 AVOID Context for frequently changing data:
+❌ const CountContext = createContext() // Re-renders all consumers
+
+// ⚡ USE Redux for frequently changing data:
+✅ const count = useSelector(state => state.counter.value) // Only re-renders if count changes
+```
+
+**Team Size Considerations:**
+```javascript
+// 👤 Solo Developer (1 person):
+- Small project → useState + useEffect
+- Medium project → Context API
+- Large project → Redux Toolkit
+
+// 👥 Small Team (2-5 people):  
+- Any size → Redux Toolkit (consistency)
+
+// 🏢 Large Team (5+ people):
+- Always → Redux Toolkit (predictability)
+```
 
 ✅ **Use Redux Toolkit when you have:**
 - Complex state that's shared across many components
@@ -190,6 +394,83 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ---
 
 ## Creating Redux Slices
+
+### 💡 Understanding Redux Slices
+
+**What is a Slice?** Think of slices as **feature-based state modules**:
+
+```javascript
+// 🏦 Traditional Redux (lots of boilerplate)
+// Actions
+const LOGIN_START = 'auth/LOGIN_START'
+const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS'  
+const LOGIN_FAILURE = 'auth/LOGIN_FAILURE'
+
+const loginStart = () => ({ type: LOGIN_START })
+const loginSuccess = (user) => ({ type: LOGIN_SUCCESS, payload: user })
+const loginFailure = (error) => ({ type: LOGIN_FAILURE, payload: error })
+
+// Reducer  
+function authReducer(state = initialState, action) {
+  switch (action.type) {
+    case LOGIN_START:
+      return { ...state, loading: true }
+    case LOGIN_SUCCESS:
+      return { ...state, loading: false, user: action.payload }
+    // ... more cases
+  }
+}
+
+// 🚀 Redux Toolkit Slice (concise & powerful)
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    loginStart: (state) => { state.loading = true },
+    loginSuccess: (state, action) => {
+      state.loading = false
+      state.user = action.payload
+    },
+    loginFailure: (state, action) => {
+      state.loading = false  
+      state.error = action.payload
+    }
+  }
+})
+```
+
+**Key Slice Concepts:**
+1. **Feature Organization**: Each slice handles one domain (auth, tasks, ui)
+2. **Immer Integration**: Write "mutative" code, Immer makes it immutable
+3. **Auto-Generated Actions**: Actions created automatically from reducer names
+4. **Type Safety**: Full TypeScript support out of the box
+
+**Slice Architecture Patterns:**
+```javascript
+// 📁 Domain-Driven Slices (Recommended)
+/store
+  /slices
+    authSlice.ts     // User authentication & session
+    tasksSlice.ts    // Task management
+    uiSlice.ts       // UI state (modals, notifications)
+    settingsSlice.ts // App settings & preferences
+  /api
+    apiSlice.ts      // RTK Query API definitions
+
+// 📊 State Shape Preview:
+{
+  auth: { user: {...}, isAuthenticated: true, loading: false },
+  tasks: { items: [], filter: 'all', loading: false },
+  ui: { sidebarOpen: true, notifications: [] },
+  api: { queries: {...}, mutations: {...} }
+}
+```
+
+**Slice Best Practices:**
+- **Single Responsibility**: Each slice handles one feature domain
+- **Normalized State**: Keep state flat, avoid nested objects
+- **Consistent Naming**: Use present tense for state, past tense for actions
+- **Error Handling**: Include loading/error states for async operations
 
 ### Step 1: Auth Slice
 
@@ -1118,6 +1399,87 @@ export const selectTaskStatistics = (state: { tasks: typeof initialState }) => {
 
 ## RTK Query Setup
 
+### 💡 Understanding Server State vs Client State
+
+**The Two Types of State in Modern Apps:**
+
+```javascript
+// 🖥️ Client State (App-controlled)
+{
+  ui: { sidebarOpen: true, currentPage: 'dashboard' },
+  form: { email: 'user@example.com', errors: {} },
+  user: { preferences: { theme: 'dark' } }
+}
+
+// 🌐 Server State (Server-controlled, cached locally)  
+{
+  api: {
+    queries: {
+      'getUsers': { data: [...], status: 'fulfilled' },
+      'getTasks': { data: [...], status: 'pending' }
+    }
+  }
+}
+```
+
+**Why Server State is Different:**
+1. **Remote Origin**: Data lives on server, not in your app
+2. **Asynchronous**: All operations are async (network calls)
+3. **Shared Ownership**: Multiple users can modify the same data
+4. **Cache Management**: Need strategies for stale data, invalidation
+5. **Error Handling**: Network failures, timeouts, server errors
+
+**Traditional Server State Problems:**
+```javascript
+// ❌ Manual server state management (error-prone)
+function TaskList() {
+  const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  
+  useEffect(() => {
+    setLoading(true)
+    fetch('/api/tasks')
+      .then(res => res.json())
+      .then(setTasks)
+      .catch(setError)
+      .finally(() => setLoading(false))
+  }, [])
+  
+  // What about caching? Refetching? Error retry? Race conditions?
+}
+
+// ✅ RTK Query handles everything automatically
+function TaskList() {
+  const { data: tasks, isLoading, error } = useGetTasksQuery()
+  
+  // Caching ✅ Refetching ✅ Error retry ✅ Race conditions ✅
+}
+```
+
+**RTK Query Mental Model - Think of it as a Smart Cache:**
+```javascript
+// 🧠 RTK Query = Intelligent Data Layer
+Component Request → RTK Query → Check Cache → API Call (if needed) → Update Cache → Re-render Component
+
+// 📊 Cache Lifecycle:
+1. Component mounts → Subscribe to query
+2. Cache miss → Fetch from server  
+3. Cache hit → Return cached data instantly
+4. Data becomes stale → Background refetch
+5. Component unmounts → Unsubscribe (cache persists)
+6. Cache becomes unused → Garbage collect after timeout
+```
+
+**Key RTK Query Benefits:**
+- **Automatic Caching**: Intelligent cache with configurable TTL
+- **Background Refetching**: Keeps data fresh automatically
+- **Optimistic Updates**: UI updates immediately, syncs later
+- **Error Handling**: Built-in retry logic and error states
+- **Loading States**: Automatic loading indicators
+- **TypeScript**: Full type safety for API responses
+- **DevTools**: Excellent debugging with cache inspection
+
 ### Step 1: Create API Slice
 
 Create `src/store/api/apiSlice.ts`:
@@ -1681,6 +2043,481 @@ export const selectSelectedProject = (state: { projects: typeof initialState }) 
   const selectedId = state.projects.selectedProjectId
   return selectedId ? selectProjectById(state, selectedId) : null
 }
+```
+
+---
+
+## Performance Optimization
+
+### 💡 Understanding Redux Performance
+
+**Redux Performance Challenges:**
+```javascript
+// ❌ Performance anti-patterns
+function TaskList() {
+  // Re-selects all tasks on every render (expensive)
+  const tasks = useSelector(state => state.tasks.items)
+  const filteredTasks = tasks.filter(task => task.status === 'active')
+  
+  // Object creation causes unnecessary re-renders
+  const taskStats = useSelector(state => ({
+    total: state.tasks.items.length,
+    completed: state.tasks.items.filter(t => t.status === 'done').length
+  }))
+  
+  return <div>{/* Renders */}</div>
+}
+
+// ✅ Optimized selectors
+const selectActiveTasks = createSelector(
+  [state => state.tasks.items],
+  (tasks) => tasks.filter(task => task.status === 'active')
+)
+
+const selectTaskStats = createSelector(
+  [state => state.tasks.items],
+  (tasks) => ({
+    total: tasks.length,
+    completed: tasks.filter(t => t.status === 'done').length
+  })
+)
+
+function TaskList() {
+  const activeTasks = useSelector(selectActiveTasks)
+  const taskStats = useSelector(selectTaskStats)
+  
+  return <div>{/* Only re-renders when data actually changes */}</div>
+}
+```
+
+### Step 1: Memoized Selectors
+
+Create optimized selectors in `src/store/selectors/`:
+
+```typescript
+// src/store/selectors/taskSelectors.ts
+import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from '../index'
+
+// Base selectors
+const selectTasksSlice = (state: RootState) => state.tasks
+const selectTaskItems = (state: RootState) => state.tasks.items
+const selectTaskFilter = (state: RootState) => state.tasks.filter
+
+// Memoized computed selectors
+export const selectFilteredTasks = createSelector(
+  [selectTaskItems, selectTaskFilter],
+  (tasks, filter) => {
+    switch (filter) {
+      case 'active':
+        return tasks.filter(task => task.status !== 'done')
+      case 'completed':
+        return tasks.filter(task => task.status === 'done')
+      case 'overdue':
+        return tasks.filter(task => 
+          task.dueDate && 
+          new Date(task.dueDate) < new Date() && 
+          task.status !== 'done'
+        )
+      default:
+        return tasks
+    }
+  }
+)
+
+export const selectTaskStats = createSelector(
+  [selectTaskItems],
+  (tasks) => ({
+    total: tasks.length,
+    active: tasks.filter(task => task.status !== 'done').length,
+    completed: tasks.filter(task => task.status === 'done').length,
+    overdue: tasks.filter(task => 
+      task.dueDate && 
+      new Date(task.dueDate) < new Date() && 
+      task.status !== 'done'
+    ).length,
+  })
+)
+
+// Parametric selector for single task
+export const selectTaskById = (taskId: string) =>
+  createSelector(
+    [selectTaskItems],
+    (tasks) => tasks.find(task => task.id === taskId)
+  )
+```
+
+### Step 2: Component Optimization
+
+```typescript
+// src/components/TaskList/TaskItem.tsx
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { selectTaskById } from '@/store/selectors/taskSelectors'
+
+interface TaskItemProps {
+  taskId: string
+}
+
+// Component only re-renders when this specific task changes
+export const TaskItem: React.FC<TaskItemProps> = React.memo(({ taskId }) => {
+  const task = useSelector(selectTaskById(taskId))
+  
+  if (!task) return null
+  
+  return (
+    <div>
+      <h3>{task.title}</h3>
+      <p>{task.description}</p>
+    </div>
+  )
+})
+
+// src/components/TaskList/index.tsx
+export const TaskList: React.FC = () => {
+  const taskIds = useSelector(state => state.tasks.items.map(task => task.id))
+  
+  return (
+    <div>
+      {taskIds.map(taskId => (
+        <TaskItem key={taskId} taskId={taskId} />
+      ))}
+    </div>
+  )
+}
+```
+
+### Step 3: RTK Query Performance
+
+```typescript
+// Optimized queries with selective subscriptions
+export const tasksApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getTasks: builder.query<Task[], void>({
+      query: () => '/tasks',
+      // Keep data fresh for 60 seconds
+      keepUnusedDataFor: 60,
+      // Provide specific cache tags for fine-grained invalidation
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Task' as const, id })),
+              { type: 'Task', id: 'LIST' },
+            ]
+          : [{ type: 'Task', id: 'LIST' }],
+    }),
+    
+    updateTask: builder.mutation<Task, Partial<Task> & Pick<Task, 'id'>>({
+      query: ({ id, ...patch }) => ({
+        url: `/tasks/${id}`,
+        method: 'PATCH',
+        body: patch,
+      }),
+      // Optimistic update
+      async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          tasksApiSlice.util.updateQueryData('getTasks', undefined, (draft) => {
+            const task = draft.find(task => task.id === id)
+            if (task) {
+              Object.assign(task, patch)
+            }
+          })
+        )
+        
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+      // Invalidate specific task
+      invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
+    }),
+  }),
+})
+```
+
+---
+
+## Testing Redux Logic
+
+### 💡 Understanding Redux Testing
+
+**What to Test in Redux:**
+1. **Reducers**: Pure functions with predictable outputs
+2. **Action Creators**: Generate correct action objects
+3. **Selectors**: Return correct derived state
+4. **Async Thunks**: Handle API calls and state updates
+5. **RTK Query**: API endpoints and cache behavior
+
+### Step 1: Testing Reducers
+
+```typescript
+// src/store/slices/__tests__/tasksSlice.test.ts
+import { tasksSlice, addTask, updateTask, deleteTask } from '../tasksSlice'
+import type { Task } from '@/types'
+
+describe('tasksSlice', () => {
+  const initialState = {
+    items: [],
+    filter: 'all' as const,
+    loading: false,
+    error: null,
+  }
+  
+  const mockTask: Task = {
+    id: '1',
+    title: 'Test Task',
+    description: 'Test Description',
+    status: 'todo',
+    priority: 'medium',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  test('should handle addTask', () => {
+    const action = addTask(mockTask)
+    const state = tasksSlice.reducer(initialState, action)
+    
+    expect(state.items).toHaveLength(1)
+    expect(state.items[0]).toEqual(mockTask)
+  })
+
+  test('should handle updateTask', () => {
+    const stateWithTask = {
+      ...initialState,
+      items: [mockTask],
+    }
+    
+    const updates = { title: 'Updated Task', status: 'done' as const }
+    const action = updateTask({ id: '1', updates })
+    const state = tasksSlice.reducer(stateWithTask, action)
+    
+    expect(state.items[0].title).toBe('Updated Task')
+    expect(state.items[0].status).toBe('done')
+  })
+
+  test('should handle deleteTask', () => {
+    const stateWithTask = {
+      ...initialState,
+      items: [mockTask],
+    }
+    
+    const action = deleteTask('1')
+    const state = tasksSlice.reducer(stateWithTask, action)
+    
+    expect(state.items).toHaveLength(0)
+  })
+})
+```
+
+### Step 2: Testing Selectors
+
+```typescript
+// src/store/selectors/__tests__/taskSelectors.test.ts
+import { selectFilteredTasks, selectTaskStats } from '../taskSelectors'
+import type { RootState } from '../../index'
+
+describe('taskSelectors', () => {
+  const mockState: Partial<RootState> = {
+    tasks: {
+      items: [
+        {
+          id: '1',
+          title: 'Todo Task',
+          status: 'todo',
+          dueDate: '2025-12-31',
+          createdAt: '2025-09-01T00:00:00Z',
+          updatedAt: '2025-09-01T00:00:00Z',
+        },
+        {
+          id: '2',
+          title: 'Done Task',
+          status: 'done',
+          createdAt: '2025-09-01T00:00:00Z',
+          updatedAt: '2025-09-01T00:00:00Z',
+        },
+      ],
+      filter: 'all',
+      loading: false,
+      error: null,
+    },
+  }
+
+  test('selectFilteredTasks should filter active tasks', () => {
+    const stateWithFilter = {
+      ...mockState,
+      tasks: { ...mockState.tasks!, filter: 'active' as const },
+    }
+    
+    const result = selectFilteredTasks(stateWithFilter as RootState)
+    
+    expect(result).toHaveLength(1)
+    expect(result[0].status).toBe('todo')
+  })
+
+  test('selectTaskStats should calculate correct stats', () => {
+    const result = selectTaskStats(mockState as RootState)
+    
+    expect(result).toEqual({
+      total: 2,
+      active: 1,
+      completed: 1,
+      overdue: 0,
+    })
+  })
+})
+```
+
+### Step 3: Testing RTK Query
+
+```typescript
+// src/store/api/__tests__/tasksApi.test.ts
+import { setupApiStore } from '@/test-utils/api-store'
+import { tasksApiSlice } from '../tasksApiSlice'
+
+describe('tasksApiSlice', () => {
+  const storeRef = setupApiStore(tasksApiSlice)
+
+  test('getTasks should fetch and cache tasks', async () => {
+    const { store } = storeRef
+    
+    // Start the query
+    const promise = store.dispatch(tasksApiSlice.endpoints.getTasks.initiate())
+    
+    // Wait for the query to finish
+    const result = await promise
+    
+    expect(result.data).toBeDefined()
+    expect(Array.isArray(result.data)).toBe(true)
+    
+    // Check that the data is cached
+    const state = store.getState()
+    const cachedData = tasksApiSlice.endpoints.getTasks.select()(state)
+    expect(cachedData.data).toEqual(result.data)
+  })
+})
+```
+
+### Step 4: Testing Components with Redux
+
+```typescript
+// src/components/__tests__/TaskList.test.tsx
+import { render, screen } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
+import { TaskList } from '../TaskList'
+import tasksReducer from '@/store/slices/tasksSlice'
+
+function renderWithRedux(
+  component: React.ReactElement,
+  preloadedState = {}
+) {
+  const store = configureStore({
+    reducer: { tasks: tasksReducer },
+    preloadedState,
+  })
+  
+  return render(<Provider store={store}>{component}</Provider>)
+}
+
+describe('TaskList', () => {
+  test('renders tasks from Redux store', () => {
+    const preloadedState = {
+      tasks: {
+        items: [
+          { id: '1', title: 'Test Task', status: 'todo' },
+        ],
+        filter: 'all',
+        loading: false,
+        error: null,
+      },
+    }
+    
+    renderWithRedux(<TaskList />, preloadedState)
+    
+    expect(screen.getByText('Test Task')).toBeInTheDocument()
+  })
+})
+```
+
+---
+
+## Best Practices
+
+### 💡 Redux Architecture Best Practices
+
+**State Structure Guidelines:**
+```javascript
+// ✅ Good state structure (normalized, flat)
+{
+  entities: {
+    users: { byId: { '1': {...}, '2': {...} }, allIds: ['1', '2'] },
+    tasks: { byId: { '1': {...}, '2': {...} }, allIds: ['1', '2'] },
+  },
+  ui: {
+    selectedTaskId: '1',
+    sidebarOpen: true,
+    loading: { tasks: false, users: false },
+  }
+}
+
+// ❌ Avoid nested, denormalized state
+{
+  users: [
+    { 
+      id: '1', 
+      tasks: [
+        { id: '1', assignedUser: { id: '1', name: '...' } }  // Duplication!
+      ] 
+    }
+  ]
+}
+```
+
+**Key Best Practices:**
+
+1. **Feature-Based Organization**: Group by domain, not by technical concern
+2. **Normalized State**: Use createEntityAdapter for relational data
+3. **Memoized Selectors**: Use createSelector for computed values
+4. **Type Safety**: Leverage TypeScript for better developer experience
+5. **Server State Separation**: Use RTK Query for API data, Redux for client state
+6. **Single Responsibility**: Each slice handles one domain
+7. **Immutable Updates**: Use RTK's Immer integration
+8. **Error Boundaries**: Handle async errors gracefully
+
+**Common Anti-Patterns to Avoid:**
+```javascript
+// ❌ Don't store derived data
+const slice = createSlice({
+  name: 'tasks',
+  initialState: {
+    tasks: [],
+    completedTasks: [],  // ❌ This can be computed
+    taskCount: 0,        // ❌ This can be computed
+  }
+})
+
+// ✅ Compute derived data in selectors
+const selectCompletedTasks = createSelector(
+  [selectTasks],
+  (tasks) => tasks.filter(task => task.status === 'done')
+)
+
+// ❌ Don't put non-serializable data in state
+const slice = createSlice({
+  initialState: {
+    dateObject: new Date(),    // ❌ Not serializable
+    functionRef: () => {},     // ❌ Not serializable
+  }
+})
+
+// ✅ Store serializable data only
+const slice = createSlice({
+  initialState: {
+    dateString: '2025-09-20T00:00:00Z',  // ✅ Serializable
+  }
+})
 ```
 
 ---
