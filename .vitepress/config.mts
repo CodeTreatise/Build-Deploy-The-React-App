@@ -11,7 +11,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/01-project-setup' },
-      { text: 'GitHub', link: 'https://github.com/your-username/modern-react-guide' }
+      { text: 'GitHub', link: 'https://github.com/CodeTreatise/Build-Deploy-The-React-App' }
     ],
 
     sidebar: [
@@ -50,12 +50,17 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-username/modern-react-guide' }
+      { icon: 'github', link: 'https://github.com/CodeTreatise/Build-Deploy-The-React-App' }
     ],
 
+    editLink: {
+      pattern: 'https://github.com/CodeTreatise/Build-Deploy-The-React-App/edit/main/:path',
+      text: 'Edit this page on GitHub'
+    },
+
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2025 Modern React Guide'
+      message: 'Released under the MIT License. | ⭐ <a href="https://github.com/CodeTreatise/Build-Deploy-The-React-App">Star on GitHub</a> | 🍴 <a href="https://github.com/CodeTreatise/Build-Deploy-The-React-App/fork">Fork this project</a>',
+      copyright: 'Copyright © 2025 CodeTreatise - Modern React Guide'
     }
   }
 })
