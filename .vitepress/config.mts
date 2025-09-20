@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Modern React Guide",
   description: "Complete Step-by-Step Guide: From Zero to Production. Build modern React applications using industry standards and best practices.",
-  base: '/modern-react-guide/',
+  base: '/Build-Deploy-The-React-App/',
   ignoreDeadLinks: true, // Temporarily ignore dead links during initial setup
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
